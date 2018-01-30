@@ -1,0 +1,8 @@
+{
+  "name": "FYP04",
+  "app_id": "af95d9d2",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
