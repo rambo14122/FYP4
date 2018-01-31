@@ -12,6 +12,7 @@ export class GameProvider {
   gameTableInfoKeys = [];
   puzzleInfoKeys = [];
   readonly GAME_TABLE_UPDATE = "gameTableUpdate";
+  readonly PUZZLE_TABLE = 'puzzles';
 
   constructor(private events: Events, private settingProvider: SettingProvider) {
 
@@ -46,9 +47,21 @@ export class GameProvider {
     });
   }
 
-  updateGameTable(gameToUpdate) {
+  updateLocation(locationId, locationTemp) {
     var promise = new Promise((resolve, reject) => {
-        this.gameTableRef.set(gameToUpdate).then(() => {
+        this.gameTableRef.child(locationId).set(locationTemp).then(() => {
+          resolve(true);
+        }).catch((err) => {
+          resolve(err);
+        })
+      }
+    )
+    return promise;
+  }
+
+  updatePuzzle(locationId, puzzleId, puzzleTemp) {
+    var promise = new Promise((resolve, reject) => {
+        this.gameTableRef.child(locationId).child(this.PUZZLE_TABLE).child(puzzleId).set(puzzleTemp).then(() => {
           resolve(true);
         }).catch((err) => {
           resolve(err);

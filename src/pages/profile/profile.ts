@@ -17,6 +17,7 @@ export class ProfilePage {
   }
 
   initUser() {
+    this.userTemp = {} as User;
     this.userTemp.name = '';
     this.userTemp.photoUrl = '';
     this.userTemp.group = '';

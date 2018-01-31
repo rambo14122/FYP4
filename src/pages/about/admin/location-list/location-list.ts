@@ -18,6 +18,7 @@ export class LocationListPage {
   }
 
   initLocation() {
+    this.locationTemp = {} as Location;
     this.locationTemp.puzzles = null;
     this.locationTemp.name = '';
     this.locationTemp.type = '';
@@ -27,7 +28,6 @@ export class LocationListPage {
 
   editLocation(locationId) {
     this.locationTemp = this.gameProvider.gameTableInfo[locationId];
-    this.updateLocation(locationId);
   }
 
   addLocation() {
@@ -39,23 +39,17 @@ export class LocationListPage {
   }
 
   updateLocation(locationId) {
-    var gameToUpdate = Object.assign({}, this.gameProvider.gameTableInfo);
-    gameToUpdate[locationId] = this.locationTemp;
-    this.gameProvider.updateGameTable(gameToUpdate).then((res) => {
+    this.gameProvider.updateLocation(locationId, this.locationTemp).then((res) => {
       console.log("update game table res", res)
     }).catch((err) => {
       console.log("update game table err", err);
-    })
+    });
+    this.initLocation();
   }
 
   deleteLocation(locationId) {
-    var gameToUpdate = Object.assign({}, this.gameProvider.gameTableInfo);
-    gameToUpdate[locationId] = null;
-    this.gameProvider.updateGameTable(gameToUpdate).then((res) => {
-      console.log("update game table res", res)
-    }).catch((err) => {
-      console.log("update game table err", err);
-    })
+    this.locationTemp = null;
+    this.updateLocation(locationId);
   }
 
   viewPuzzles(locationId) {

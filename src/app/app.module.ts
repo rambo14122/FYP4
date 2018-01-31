@@ -18,6 +18,8 @@ import { LoaderProvider } from '../providers/utility/loader/loader';
 import {Device} from '@ionic-native/device';
 import {OpenPage} from '../pages/open/open';
 import { GameProvider } from '../providers/tables/game/game';
+import { StatusProvider } from '../providers/tables/status/status';
+import { GroupProvider } from '../providers/tables/group/group';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { GameProvider } from '../providers/tables/game/game';
     UserProvider,
     LoaderProvider,
     Device,
-    GameProvider
+    GameProvider,
+    StatusProvider,
+    GroupProvider
   ]
 })
 export class AppModule {}

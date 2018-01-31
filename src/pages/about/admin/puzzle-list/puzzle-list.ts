@@ -21,6 +21,7 @@ export class PuzzleListPage {
   }
 
   initPuzzle() {
+    this.puzzleTemp = {} as Puzzle;
     this.puzzleTemp.title = '';
     this.puzzleTemp.strictAnswer = false;
     this.puzzleTemp.puzzleContent = '';
@@ -34,17 +35,11 @@ export class PuzzleListPage {
 
   editPuzzle(puzzleId) {
     this.puzzleTemp = this.gameProvider.gameTableInfo[this.locationId][puzzleId];
-    this.updatePuzzle(puzzleId);
   }
 
   deletePuzzle(puzzleId) {
-    var gameToUpdate = Object.assign({}, this.gameProvider.gameTableInfo);
-    gameToUpdate[this.locationId].puzzles[puzzleId] = null;
-    this.gameProvider.updateGameTable(gameToUpdate).then((res) => {
-      console.log("update game table res", res)
-    }).catch((err) => {
-      console.log("update game table err", err);
-    })
+    this.puzzleTemp = null;
+    this.updatePuzzle(puzzleId);
   }
 
   addPuzzle() {
@@ -57,20 +52,12 @@ export class PuzzleListPage {
   }
 
   updatePuzzle(puzzleId) {
-    var gameToUpdate = Object.assign({}, this.gameProvider.gameTableInfo);
-    if (gameToUpdate[this.locationId].puzzles == undefined || gameToUpdate[this.locationId].puzzles == null) {
-      gameToUpdate[this.locationId].puzzles = {} as Puzzle[];
-    }
-    gameToUpdate[this.locationId].puzzles[puzzleId] = this.puzzleTemp;
-    console.log("test1", gameToUpdate[this.locationId].puzzles);
-    console.log("test2", gameToUpdate[this.locationId].puzzles[puzzleId]);
-
-    console.log("gameToUpdate", gameToUpdate);
-    this.gameProvider.updateGameTable(gameToUpdate).then((res) => {
+    this.gameProvider.updatePuzzle(this.locationId, puzzleId, this.puzzleTemp).then((res) => {
       console.log("update game table res", res)
     }).catch((err) => {
       console.log("update game table err", err);
     })
+    this.initPuzzle();
   }
 
 }
