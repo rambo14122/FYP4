@@ -5,26 +5,49 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { SettingProvider } from '../providers/setting/setting';
+
+
+import {config} from "./firebaseConfig";
+import {AngularFireModule} from "angularfire2";
+import {AngularFireAuth} from "angularfire2/auth";
+import { UserProvider } from '../providers/tables/user/user';
+import {Network} from '@ionic-native/network';
+import { ToastProvider } from '../providers/utility/toast/toast';
+import { LoaderProvider } from '../providers/utility/loader/loader';
+import {Device} from '@ionic-native/device';
+import {OpenPage} from '../pages/open/open';
+import { GameProvider } from '../providers/tables/game/game';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    OpenPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(config)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    OpenPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    SettingProvider,
+    UserProvider,
+
+    AngularFireAuth,
+    Network,
+    ToastProvider,
+    UserProvider,
+    LoaderProvider,
+    Device,
+    GameProvider
   ]
 })
 export class AppModule {}
