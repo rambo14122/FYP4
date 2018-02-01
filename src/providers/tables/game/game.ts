@@ -52,7 +52,7 @@ export class GameProvider {
         this.gameTableRef.child(locationId).set(locationTemp).then(() => {
           resolve(true);
         }).catch((err) => {
-          resolve(err);
+          reject(err);
         })
       }
     )

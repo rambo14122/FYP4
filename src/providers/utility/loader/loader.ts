@@ -8,6 +8,7 @@ export class LoaderProvider {
   constructor(private loadingController: LoadingController) {
 
   }
+
   showLoader(loaderMessage) {
     this.loader = this.loadingController.create(
       {content: loaderMessage});
@@ -15,7 +16,9 @@ export class LoaderProvider {
   }
 
   dismissLoader() {
-    this.loader.dismiss();
+    if (this.loader != null) {
+      this.loader.dismiss();
+    }
   }
 
 }

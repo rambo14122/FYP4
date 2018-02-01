@@ -5,6 +5,7 @@ import {Device} from '@ionic-native/device';
 import * as firebase from 'firebase';
 import {User} from '../../../assets/models/interfaces/User';
 import {SettingProvider} from '../../setting/setting';
+import {LoaderProvider} from '../../utility/loader/loader';
 
 @Injectable()
 export class UserProvider {
@@ -13,19 +14,21 @@ export class UserProvider {
   readonly USER_PROFILE_IMAGE = 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e';
   userTableRef = firebase.database().ref(this.USER_TABLE);
   userTableInfo: User[];
-  userTableInfoKey= [];
+  userTableInfoKey = [];
   readonly USER_TABLE_UPDATE = "userTableUpdate";
   readonly LAST_TIME_ONLINE = "lastTimeOnline";
 
-  constructor(private events: Events, private settingProvider: SettingProvider, private device: Device, private platform: Platform, private angularFireAuth: AngularFireAuth) {
+  constructor(private loaderProvider: LoaderProvider, private events: Events, private settingProvider: SettingProvider, private device: Device, private platform: Platform, private angularFireAuth: AngularFireAuth) {
   }
 
   checkFireBaseConnection() {
     var connectedRef = firebase.database().ref(this.CONNECTION_STATE);
     connectedRef.on("value", (snapshot) => {
       if (snapshot.val() === true) {
+        this.loaderProvider.dismissLoader();
       } else {
         this.userTableRef.child(this.getUid()).child(this.LAST_TIME_ONLINE).onDisconnect().set(this.settingProvider.getFireBaseTimeStamp());
+        this.loaderProvider.showLoader("Reconnecting...");
       }
     });
   }
@@ -83,7 +86,7 @@ export class UserProvider {
 
   getUid() {
     if (this.platform.is('core') || this.platform.is('mobileweb')) {
-      return "rambo1412";
+      return "rambo14122";
     }
     return this.device.uuid;
   }

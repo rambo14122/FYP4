@@ -20,7 +20,6 @@ export class ProfilePage {
     this.userTemp = {} as User;
     this.userTemp.name = '';
     this.userTemp.photoUrl = '';
-    this.userTemp.group = '';
     this.userTemp.edited = false;
   }
 
