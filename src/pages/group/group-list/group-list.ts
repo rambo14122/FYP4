@@ -10,7 +10,6 @@ import {GroupProvider} from '../../../providers/tables/group/group';
 export class GroupListPage {
 
   constructor(private groupProvider: GroupProvider, public navCtrl: NavController, public navParams: NavParams) {
-    console.log("testId", this.groupProvider.userGroupId);
   }
 
   createGroup() {
@@ -27,7 +26,20 @@ export class GroupListPage {
       });
     }
     else {
-      this.joinGroupFurther(groupId);
+      if (this.groupProvider.userGroupId != null && this.groupProvider.userGroupId != '') {
+        this.joinGroupFurther(groupId);
+      }
+      else {
+        this.quitGroup().then((res) => {
+            if (res) {
+              this.joinGroupFurther(groupId);
+            }
+          }
+        ).catch((err) => {
+          console.log(err);
+        })
+      }
+
     }
   }
 
@@ -39,11 +51,21 @@ export class GroupListPage {
     })
   }
 
-  quitGroup(groupId) {
-    this.groupProvider.quitGroup(groupId).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-    })
+  quitGroup() {
+    var promise = new Promise((resolve, reject) => {
+      this.groupProvider.quitGroup().then((res) => {
+        console.log(res);
+        resolve(true);
+      }).catch((err) => {
+        console.log(err);
+        reject(err);
+      })
+    });
+    return promise;
+  }
+
+  editGroup(groupId)
+  {
+    this.navCtrl.push("GroupProfilePage",{'groupId':groupId});
   }
 }

@@ -48,6 +48,8 @@ export class GroupProvider {
     for (let groupId of this.groupTableInfoKeys) {
       if (this.groupTableInfo[groupId].members.indexOf(this.userProvider.getUid()) > -1) {
         this.userGroupId = groupId;
+        console.log("creator", (this.groupTableInfo[groupId].groupCreator));
+        console.log("uid", this.userProvider.getUid())
         if (this.groupTableInfo[groupId].groupCreator == this.userProvider.getUid()) {
           this.groupLeaderFlag = true;
         }
@@ -58,7 +60,8 @@ export class GroupProvider {
 
   createGroup(groupTemp) {
     groupTemp.groupSyncTime = this.settingProvider.getFireBaseTimeStamp();
-    var promise = new Promise(((resolve, reject) => {
+    groupTemp.groupNumber = this.getNextGroupNumber();
+    var promise = new Promise((resolve, reject) => {
       this.settingProvider.getEstimatedServerTimeOnce().then((res) => {
         this.groupTableRef.child(res + '').set(groupTemp).then(() => {
           resolve(true);
@@ -68,8 +71,30 @@ export class GroupProvider {
       }).catch((err) => {
         reject(err);
       });
-    }));
+    });
     return promise;
+  }
+
+  updateGroup(groupId, groupTemp) {
+    var promise = new Promise((resolve, reject) => {
+      this.groupTableRef.child(groupId).update(groupTemp).then(() => {
+        resolve(true);
+      }).catch((err) => {
+        reject(err);
+      })
+    })
+
+    return promise;
+  }
+
+  getNextGroupNumber() {
+    var nextNumber = -1;
+    for (let groupId of this.groupTableInfoKeys) {
+      if (nextNumber < this.groupTableInfoKeys[groupId].groupNumber) {
+        nextNumber = this.groupTableInfoKeys[groupId].groupNumber;
+      }
+    }
+    return nextNumber + 1;
   }
 
   joinGroup(groupId) {
@@ -106,7 +131,8 @@ export class GroupProvider {
     return promise;
   }
 
-  quitGroup(groupId) {
+  quitGroup() {
+    var groupId = this.userGroupId;
     var promise = new Promise((resolve, reject) => {
       this.getGroupSynTime(groupId).then((res) => {
         if (res != this.groupTableInfo[groupId].groupSyncTime) {

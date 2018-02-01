@@ -26,15 +26,16 @@
       <button *ngIf="groupProvider.userGroupId!=groupId" ion-button clear item-end (click)="joinGroup(groupId)">
         join
       </button>
-      <button *ngIf="groupProvider.userGroupId==groupId&&groupProvider.groupLeaderFlag" ion-button clear item-end>edit
+      <button *ngIf="groupProvider.userGroupId==groupId&&groupProvider.groupLeaderFlag" ion-button clear item-end
+              (click)="editGroup(groupId)">edit
       </button>
       <button *ngIf="groupProvider.userGroupId==groupId&&groupProvider.groupLeaderFlag" ion-button clear item-end
-              color="danger">dismiss
+              color="danger" (click)="dismissGroup(groupId)">dismiss
       </button>
       <button *ngIf="groupProvider.userGroupId==groupId&&!groupProvider.groupLeaderFlag" ion-button clear item-end
-              color="danger" (click)="quitGroup(groupId)">quit
+              color="danger" (click)="quitGroup()">quit
       </button>
     </ion-item>
   </ion-list>
-  <button ion-button block (click)="createGroup()">Create Group</button>
+  <button *ngIf="!groupProvider.groupLeaderFlag" ion-button block (click)="createGroup()">Create Group</button>
 </ion-content>
