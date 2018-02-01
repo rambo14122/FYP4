@@ -62,15 +62,12 @@ export class GroupProvider {
     groupTemp.groupSyncTime = this.settingProvider.getFireBaseTimeStamp();
     groupTemp.groupNumber = this.getNextGroupNumber();
     var promise = new Promise((resolve, reject) => {
-      this.settingProvider.getEstimatedServerTimeOnce().then((res) => {
-        this.groupTableRef.child(res + '').set(groupTemp).then(() => {
-          resolve(true);
-        }).catch((err) => {
-          reject(err);
-        })
+      this.groupTableRef.child(this.settingProvider.time).set(groupTemp).then(() => {
+        resolve(true);
       }).catch((err) => {
         reject(err);
-      });
+      })
+
     });
     return promise;
   }
@@ -88,10 +85,10 @@ export class GroupProvider {
   }
 
   getNextGroupNumber() {
-    var nextNumber = -1;
+    var nextNumber = 0;
     for (let groupId of this.groupTableInfoKeys) {
-      if (nextNumber < this.groupTableInfoKeys[groupId].groupNumber) {
-        nextNumber = this.groupTableInfoKeys[groupId].groupNumber;
+      if (nextNumber < this.groupTableInfo[groupId].groupNumber) {
+        nextNumber = this.groupTableInfo[groupId].groupNumber;
       }
     }
     return nextNumber + 1;
@@ -134,26 +131,29 @@ export class GroupProvider {
   quitGroup() {
     var groupId = this.userGroupId;
     var promise = new Promise((resolve, reject) => {
-      this.getGroupSynTime(groupId).then((res) => {
-        if (res != this.groupTableInfo[groupId].groupSyncTime) {
-          reject("Network busy, quit later");
-        }
-        else {
-          this.groupTableInfo[groupId].groupSyncTime = this.settingProvider.getFireBaseTimeStamp();
-          var index = this.groupTableInfo[groupId].members.indexOf(this.userProvider.getUid());
-          if (index > -1) {
-            this.groupTableInfo[groupId].members.splice(index, 1);
+      if (this.userGroupId != null) {
+        this.getGroupSynTime(groupId).then((res) => {
+          if (res != this.groupTableInfo[groupId].groupSyncTime) {
+            reject("Network busy, quit later");
           }
-          this.groupTableRef.child(groupId).update(this.groupTableInfo[groupId]).then((res) => {
-            resolve(true)
-          }).catch((err) => {
-            reject(err);
-          })
-        }
-      }).catch((err) => {
-        reject(err);
-      })
+          else {
+            this.groupTableInfo[groupId].groupSyncTime = this.settingProvider.getFireBaseTimeStamp();
+            var index = this.groupTableInfo[groupId].members.indexOf(this.userProvider.getUid());
+            if (index > -1) {
+              this.groupTableInfo[groupId].members.splice(index, 1);
+            }
 
+            this.groupTableRef.child(groupId).update(this.groupTableInfo[groupId]).then((res) => {
+              resolve(true)
+            }).catch((err) => {
+              reject(err);
+            })
+          }
+        }).catch((err) => {
+          reject(err);
+        })
+      }
+      resolve(true);
     })
     return promise;
   }

@@ -51,7 +51,7 @@ import { GroupProvider } from '../providers/tables/group/group';
     Device,
     GameProvider,
     StatusProvider,
-    GroupProvider
+    GroupProvider,
   ]
 })
 export class AppModule {}

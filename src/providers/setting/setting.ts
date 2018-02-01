@@ -8,17 +8,22 @@ export class SettingProvider {
   readonly CONNECTION_STATE = '.info/connected';
   readonly SERVER_OFFSET = '.info/serverTimeOffset';
   connectionGood = true;
+  timer;
+  time;
 
   constructor(private network: Network) {
   }
 
-  getEstimatedServerTime() {
-    var offsetRef = firebase.database().ref(this.SERVER_OFFSET);
-    offsetRef.on("value", function (snapshot) {
-      var offset = snapshot.val();
-      var estimatedServerTimeMs = new Date().getTime() + offset;
-      console.log("estimatedServerTimes:", estimatedServerTimeMs);
-    });
+  startLocalTimer() {
+    clearInterval(this.timer);
+    this.timer = setInterval(() => {
+      this.time += 1000;
+      console.log(this.time);
+    }, 1000);
+  }
+
+  stopLocalTimer() {
+    clearInterval(this.timer);
   }
 
   getEstimatedServerTimeOnce() {
@@ -27,6 +32,7 @@ export class SettingProvider {
       offsetRef.once('value').then((snapshot) => {
         var offset = snapshot.val();
         var estimatedServerTimeMs = new Date().getTime() + offset;
+        this.time = parseInt(estimatedServerTimeMs);
         resolve(estimatedServerTimeMs);
       }).catch((err) => {
         reject(err);

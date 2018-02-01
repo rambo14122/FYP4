@@ -10,8 +10,9 @@ import {UserProvider} from '../../../providers/tables/user/user';
   templateUrl: 'group-profile.html',
 })
 export class GroupProfilePage {
-  groupTemp: Group;
+  groupTemp = {} as Group;
   groupId: string;
+  lock = false;
 
   constructor(private userProvider: UserProvider, private groupProvider: GroupProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.groupId = this.navParams.get("groupId");
@@ -21,6 +22,7 @@ export class GroupProfilePage {
     }
     else
       this.initGroup();
+    this.lock = false;
   }
 
   initGroup() {
@@ -33,6 +35,7 @@ export class GroupProfilePage {
   }
 
   update() {
+    this.lock = true;
     if (this.groupId == null)
       this.createGroup();
     else
@@ -41,8 +44,11 @@ export class GroupProfilePage {
 
   updateGroup() {
     this.groupProvider.updateGroup(this.groupId, this.groupTemp).then((res) => {
+      if (res) {
+        this.navCtrl.pop();
+      }
     }).catch((err) => {
-
+      this.lock = false;
     });
   }
 
@@ -54,6 +60,7 @@ export class GroupProfilePage {
       }).catch((err) => {
         console.log(err);
         reject(err);
+        this.lock = false;
       })
     });
     return promise;
@@ -62,7 +69,10 @@ export class GroupProfilePage {
   createGroup() {
     this.groupTemp.members.push(this.userProvider.getUid());
     this.groupTemp.groupCreator = this.userProvider.getUid();
-    if (this.groupProvider.userGroupId != null && this.groupProvider.userGroupId != '') {
+    if (this.groupProvider.userGroupId == null || this.groupProvider.userGroupId == '') {
+      this.createGroupFurther();
+    }
+    else {
       this.quitGroup().then((res) => {
         if (res) {
           this.createGroupFurther();
@@ -71,9 +81,6 @@ export class GroupProfilePage {
 
       })
     }
-    else {
-      this.createGroupFurther();
-    }
 
   }
 
@@ -81,6 +88,7 @@ export class GroupProfilePage {
     this.groupProvider.createGroup(this.groupTemp).then((res) => {
       this.navCtrl.pop();
     }).catch((err) => {
+      this.lock = false;
     });
   }
 }

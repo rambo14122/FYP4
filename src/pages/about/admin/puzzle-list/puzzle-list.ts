@@ -43,12 +43,7 @@ export class PuzzleListPage {
   }
 
   addPuzzle() {
-    console.log("clickedAdd");
-    this.settingProvider.getEstimatedServerTimeOnce().then((res) => {
-      console.log(res);
-      this.updatePuzzle(res);
-    }).catch((err) => {
-    });
+    this.updatePuzzle(this.settingProvider.time);
   }
 
   updatePuzzle(puzzleId) {

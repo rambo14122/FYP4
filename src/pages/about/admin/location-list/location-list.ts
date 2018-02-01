@@ -31,11 +31,7 @@ export class LocationListPage {
   }
 
   addLocation() {
-    this.settingProvider.getEstimatedServerTimeOnce().then((res) => {
-      this.updateLocation(res);
-    }).catch((err) => {
-
-    });
+    this.updateLocation(this.settingProvider.time);
   }
 
   updateLocation(locationId) {

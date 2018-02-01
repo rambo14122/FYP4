@@ -9,7 +9,10 @@ import {GroupProvider} from '../../../providers/tables/group/group';
 })
 export class GroupListPage {
 
+  lock = false;
+
   constructor(private groupProvider: GroupProvider, public navCtrl: NavController, public navParams: NavParams) {
+    this.lock = false;
   }
 
   createGroup() {
@@ -17,6 +20,7 @@ export class GroupListPage {
   }
 
   joinGroup(groupId) {
+    this.lock = true;
     if (this.groupProvider.groupLeaderFlag) {
       this.groupProvider.dismissGroup(this.groupProvider.userGroupId).then((res) => {
         if (res == true) {
@@ -26,7 +30,7 @@ export class GroupListPage {
       });
     }
     else {
-      if (this.groupProvider.userGroupId != null && this.groupProvider.userGroupId != '') {
+      if (this.groupProvider.userGroupId == null || this.groupProvider.userGroupId == '') {
         this.joinGroupFurther(groupId);
       }
       else {
@@ -46,8 +50,10 @@ export class GroupListPage {
   joinGroupFurther(groupId) {
     this.groupProvider.joinGroup(groupId).then((res) => {
       console.log(res);
+      this.lock = false;
     }).catch((err) => {
       console.log(err);
+      this.lock = false;
     })
   }
 
@@ -64,8 +70,7 @@ export class GroupListPage {
     return promise;
   }
 
-  editGroup(groupId)
-  {
-    this.navCtrl.push("GroupProfilePage",{'groupId':groupId});
+  editGroup(groupId) {
+    this.navCtrl.push("GroupProfilePage", {'groupId': groupId});
   }
 }

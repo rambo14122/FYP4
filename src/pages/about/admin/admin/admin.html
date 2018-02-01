@@ -18,5 +18,9 @@
     <ion-item>
       <button ion-button block (click)="goToLocationPage()"> Edit Game</button>
     </ion-item>
+    <ion-item>
+      <button ion-button block (click)="startGame()"> Start Game</button>
+    </ion-item>
   </ion-list>
+  <ion-item>{{settingProvider.time|date:'HH:mm:ss':'UTC'}}</ion-item>
 </ion-content>

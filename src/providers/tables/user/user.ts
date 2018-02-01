@@ -34,7 +34,13 @@ export class UserProvider {
   }
 
   updateLastOnline() {
-    this.userTableRef.child(this.getUid()).child(this.LAST_TIME_ONLINE).set(this.settingProvider.getFireBaseTimeStamp());
+    var promise = new Promise((resolve, reject) => {
+      this.userTableRef.child(this.getUid()).child(this.LAST_TIME_ONLINE).set(this.settingProvider.getFireBaseTimeStamp()).then((res) => {
+      }).catch((err) => {
+        }
+      );
+    });
+    return promise;
   }
 
   getUserTable() {
@@ -86,7 +92,7 @@ export class UserProvider {
 
   getUid() {
     if (this.platform.is('core') || this.platform.is('mobileweb')) {
-      return "rambo1412";
+      return "rambo14122";
     }
     return this.device.uuid;
   }
