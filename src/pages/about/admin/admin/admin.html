@@ -1,9 +1,3 @@
-<!--
-  Generated template for the AdminPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
@@ -21,6 +15,18 @@
     <ion-item>
       <button ion-button block (click)="startGame()"> Start Game</button>
     </ion-item>
+    <ion-item
+      *ngIf="statusProvider.statusTableInfo!=null&&(statusProvider.statusTableInfo.endTime==null||statusProvider.statusTableInfo.endTime=='')">
+      <button ion-button block (click)="endGame()"> End Game</button>
+    </ion-item>
   </ion-list>
-  <ion-item>{{settingProvider.time|date:'HH:mm:ss':'UTC'}}</ion-item>
+  <ion-item
+    *ngIf="statusProvider.statusTableInfo!=null&&(statusProvider.statusTableInfo.endTime==null||statusProvider.statusTableInfo.endTime=='')">
+    {{settingProvider.time-statusProvider.statusTableInfo.startTime|date:'HH:mm:ss':'UTC'}}
+  </ion-item>
+  <ion-item
+    *ngIf="statusProvider.statusTableInfo!=null&&statusProvider.statusTableInfo.endTime!=null&&statusProvider.statusTableInfo.endTime!=''">
+    {{ statusProvider.statusTableInfo.endTime-statusProvider.statusTableInfo.startTime|date:'HH:mm:ss':'UTC'}}
+  </ion-item>
+
 </ion-content>

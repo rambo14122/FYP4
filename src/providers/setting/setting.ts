@@ -18,7 +18,6 @@ export class SettingProvider {
     clearInterval(this.timer);
     this.timer = setInterval(() => {
       this.time += 1000;
-      console.log(this.time);
     }, 1000);
   }
 
