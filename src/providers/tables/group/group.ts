@@ -55,10 +55,6 @@ export class GroupProvider {
       }
     }
   }
-  quitGroup()
-  {
-    
-  }
 
   createGroup(groupTemp) {
     groupTemp.groupSyncTime = this.settingProvider.getFireBaseTimeStamp();
@@ -80,7 +76,7 @@ export class GroupProvider {
     var promise = new Promise((resolve, reject) => {
       this.getGroupSynTime(groupId).then((res) => {
         if (res != this.groupTableInfo[groupId].groupSyncTime) {
-          reject("Network busy, join again later");
+          reject("Network busy, join later");
         }
         else {
           this.groupTableInfo[groupId].groupSyncTime = this.settingProvider.getFireBaseTimeStamp();
@@ -99,7 +95,41 @@ export class GroupProvider {
     return promise;
   }
 
+  dismissGroup(groupId) {
+    var promise = new Promise((resolve, reject) => {
+      this.groupTableRef.child(groupId).remove().then((res) => {
+        resolve(true);
+      }).catch((err) => {
+        reject(err);
+      })
+    });
+    return promise;
+  }
+
   quitGroup(groupId) {
+    var promise = new Promise((resolve, reject) => {
+      this.getGroupSynTime(groupId).then((res) => {
+        if (res != this.groupTableInfo[groupId].groupSyncTime) {
+          reject("Network busy, quit later");
+        }
+        else {
+          this.groupTableInfo[groupId].groupSyncTime = this.settingProvider.getFireBaseTimeStamp();
+          var index = this.groupTableInfo[groupId].members.indexOf(this.userProvider.getUid());
+          if (index > -1) {
+            this.groupTableInfo[groupId].members.splice(index, 1);
+          }
+          this.groupTableRef.child(groupId).update(this.groupTableInfo[groupId]).then((res) => {
+            resolve(true)
+          }).catch((err) => {
+            reject(err);
+          })
+        }
+      }).catch((err) => {
+        reject(err);
+      })
+
+    })
+    return promise;
   }
 
   getGroupSynTime(groupId) {

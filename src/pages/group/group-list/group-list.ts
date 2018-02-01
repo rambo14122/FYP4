@@ -18,7 +18,29 @@ export class GroupListPage {
   }
 
   joinGroup(groupId) {
+    if (this.groupProvider.groupLeaderFlag) {
+      this.groupProvider.dismissGroup(this.groupProvider.userGroupId).then((res) => {
+        if (res == true) {
+          this.joinGroupFurther(groupId);
+        }
+      }).catch((err) => {
+      });
+    }
+    else {
+      this.joinGroupFurther(groupId);
+    }
+  }
+
+  joinGroupFurther(groupId) {
     this.groupProvider.joinGroup(groupId).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  quitGroup(groupId) {
+    this.groupProvider.quitGroup(groupId).then((res) => {
       console.log(res);
     }).catch((err) => {
       console.log(err);

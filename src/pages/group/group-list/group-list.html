@@ -32,7 +32,7 @@
               color="danger">dismiss
       </button>
       <button *ngIf="groupProvider.userGroupId==groupId&&!groupProvider.groupLeaderFlag" ion-button clear item-end
-              color="danger">quit
+              color="danger" (click)="quitGroup(groupId)">quit
       </button>
     </ion-item>
   </ion-list>

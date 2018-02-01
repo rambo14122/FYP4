@@ -86,7 +86,7 @@ export class UserProvider {
 
   getUid() {
     if (this.platform.is('core') || this.platform.is('mobileweb')) {
-      return "rambo14122";
+      return "rambo1412";
     }
     return this.device.uuid;
   }
