@@ -41,21 +41,18 @@ export class GroupProvider {
   }
 
   updateUserGroupStatus() {
-    this.firstTimeFlag = false;
     this.userGroupId = '';
     this.groupLeaderFlag = false;
-
     for (let groupId of this.groupTableInfoKeys) {
       if (this.groupTableInfo[groupId].members.indexOf(this.userProvider.getUid()) > -1) {
         this.userGroupId = groupId;
-        console.log("creator", (this.groupTableInfo[groupId].groupCreator));
-        console.log("uid", this.userProvider.getUid())
         if (this.groupTableInfo[groupId].groupCreator == this.userProvider.getUid()) {
           this.groupLeaderFlag = true;
         }
         break;
       }
     }
+    this.firstTimeFlag = false;
   }
 
   createGroup(groupTemp) {

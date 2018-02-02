@@ -2,7 +2,7 @@ import {PuzzleStatus} from './PuzzleStatus';
 
 export interface GroupStatus {
   puzzles: PuzzleStatus[],
-  finishTime: string;
+  endTime: any;
   point: number;
   startTime: any;
 }

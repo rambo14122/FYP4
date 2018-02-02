@@ -1,12 +1,9 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {Component} from '@angular/core';
+import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {StatusProvider} from '../../providers/tables/status/status';
+import {GroupProvider} from '../../providers/tables/group/group';
+import {GameProvider} from '../../providers/tables/game/game';
 
-/**
- * Generated class for the GamePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -15,11 +12,17 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class GamePage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private gameProvider: GameProvider, private statusProvider: StatusProvider, private groupProvider: GroupProvider, public navCtrl: NavController, public navParams: NavParams) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad GamePage');
+
+  joinGroup() {
+
   }
 
+  startGame() {
+    this.statusProvider.groupStart().then((res) => {
+    }).catch((err) => {
+    });
+  }
 }

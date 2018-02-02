@@ -13,6 +13,7 @@ export class GameProvider {
   puzzleInfoKeys = [];
   readonly GAME_TABLE_UPDATE = "gameTableUpdate";
   readonly PUZZLE_TABLE = 'puzzles';
+  firstTimeFlag = true;
 
   constructor(private events: Events, private settingProvider: SettingProvider) {
 
@@ -44,6 +45,7 @@ export class GameProvider {
 
       }
       this.events.publish(this.GAME_TABLE_UPDATE);
+      this.firstTimeFlag = false;
     });
   }
 

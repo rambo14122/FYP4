@@ -88,6 +88,4 @@ export class SettingProvider {
     });
     return arr;
   }
-
-
 }
