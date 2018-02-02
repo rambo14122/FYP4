@@ -35,40 +35,38 @@
     </ion-item-sliding>
   </ion-list>
 
-  <!--<button ion-button block color="danger" *ngIf="!editLocationFlag" (click)="toggleForm()">Add Location</button>-->
-  <!--*ngIf="addLocationFlag||editLocationFlag"-->
-  <ion-item-group>
-    <ion-item>
-      <ion-label floating>Location name:</ion-label>
-      <ion-input type="text"
-                 [(ngModel)]="locationTemp.name"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label floating>Location type:</ion-label>
-      <ion-select [(ngModel)]="locationTemp.type">
-        <ion-option value="start">Start point</ion-option>
-        <ion-option value="random">Random point</ion-option>
-        <ion-option value="end">End point</ion-option>
-      </ion-select>
-    </ion-item>
-    <!--*ngIf="editLocationFlag"-->
-    <ion-item>
-      <ion-label floating>Location order:</ion-label>
-      <ion-input type="text"
-                 [(ngModel)]="locationTemp.order"></ion-input>
-    </ion-item>
+  <div *ngIf="locationTempKey!=null&&locationTempKey!=''">
+    <ion-item-group>
+      <ion-item>
+        <ion-label floating>Location name:</ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="locationTemp.name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Location type:</ion-label>
+        <ion-select [(ngModel)]="locationTemp.type">
+          <ion-option value="start">Start point</ion-option>
+          <ion-option value="random">Random point</ion-option>
+          <ion-option value="end">End point</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Location order:</ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="locationTemp.order"></ion-input>
+      </ion-item>
 
 
-    <!--<div class="locationImage">-->
-    <!--<img src="{{locationTemp.photoUrl}}">-->
-    <!--</div>-->
-    <!--<button ion-button block (click)="chooseImage()">Choose from Gallery</button>-->
-    <!--<div class="spacer" style="height: 20px;"></div>-->
-    <button ion-button block (click)="addLocation()">Update</button>
-    <!--<div class="spacer" style="height: 20px;"></div>-->
-    <!--<button ion-button block color="hcolor" (click)="cancelUpdate()">Cancel</button>-->
-
-  </ion-item-group>
+      <!--<div class="locationImage">-->
+      <!--<img src="{{locationTemp.photoUrl}}">-->
+      <!--</div>-->
+      <!--<button ion-button block (click)="chooseImage()">Choose from Gallery</button>-->
+      <!--<div class="spacer" style="height: 20px;"></div>-->
+      <button ion-button block (click)="updateLocation()">Submit</button>
+      <button ion-button block (click)="cancel()">Cancel</button>
+    </ion-item-group>
+  </div>
+  <button *ngIf="locationTempKey==null||locationTempKey==''" ion-button block (click)="addLocation()">Add new</button>
   <div class="spacer" style="height: 30px;"></div>
 </ion-content>
 

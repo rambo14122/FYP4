@@ -12,6 +12,7 @@ import {Puzzle} from '../../../../assets/models/interfaces/Puzzle';
 export class PuzzleListPage {
   locationId: string;
   puzzleTemp = {} as Puzzle;
+  puzzleTempKey = '';
 
   constructor(private settingProvider: SettingProvider, private gameProvider: GameProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.locationId = this.navParams.get("locationId");
@@ -31,27 +32,34 @@ export class PuzzleListPage {
     this.puzzleTemp.photoUrl = '';
     this.puzzleTemp.order = 0;
     this.puzzleTemp.special = false;
+    this.puzzleTempKey = '';
   }
 
   editPuzzle(puzzleId) {
-    this.puzzleTemp = this.gameProvider.gameTableInfo[this.locationId][puzzleId];
+    this.puzzleTemp = this.gameProvider.gameTableInfo[this.locationId].puzzles[puzzleId];
+    this.puzzleTempKey = puzzleId;
   }
 
   deletePuzzle(puzzleId) {
     this.puzzleTemp = null;
-    this.updatePuzzle(puzzleId);
+    this.puzzleTempKey = puzzleId;
+    this.updatePuzzle();
   }
 
   addPuzzle() {
-    this.updatePuzzle(this.settingProvider.time);
+    this.puzzleTempKey = this.settingProvider.time;
   }
 
-  updatePuzzle(puzzleId) {
-    this.gameProvider.updatePuzzle(this.locationId, puzzleId, this.puzzleTemp).then((res) => {
+  updatePuzzle() {
+    this.gameProvider.updatePuzzle(this.locationId, this.puzzleTempKey, this.puzzleTemp).then((res) => {
       console.log("update game table res", res)
     }).catch((err) => {
       console.log("update game table err", err);
     })
+    this.initPuzzle();
+  }
+
+  cancel() {
     this.initPuzzle();
   }
 

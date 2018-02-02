@@ -12,6 +12,7 @@ import {Puzzle} from '../../../../assets/models/interfaces/Puzzle';
 })
 export class LocationListPage {
   locationTemp = {} as Location;
+  locationTempKey = '';
 
   constructor(private settingProvider: SettingProvider, private gameProvider: GameProvider, public navCtrl: NavController, public navParams: NavParams) {
     this.initLocation();
@@ -24,18 +25,20 @@ export class LocationListPage {
     this.locationTemp.type = '';
     this.locationTemp.photoUrl = '';
     this.locationTemp.order = 0;
+    this.locationTempKey = '';
   }
 
   editLocation(locationId) {
     this.locationTemp = this.gameProvider.gameTableInfo[locationId];
+    this.locationTempKey = locationId;
   }
 
   addLocation() {
-    this.updateLocation(this.settingProvider.time);
+    this.locationTempKey = this.settingProvider.time;
   }
 
-  updateLocation(locationId) {
-    this.gameProvider.updateLocation(locationId, this.locationTemp).then((res) => {
+  updateLocation() {
+    this.gameProvider.updateLocation(this.locationTempKey, this.locationTemp).then((res) => {
       console.log("update game table res", res)
     }).catch((err) => {
       console.log("update game table err", err);
@@ -45,7 +48,12 @@ export class LocationListPage {
 
   deleteLocation(locationId) {
     this.locationTemp = null;
-    this.updateLocation(locationId);
+    this.locationTempKey = locationId;
+    this.updateLocation();
+  }
+
+  cancel() {
+    this.initLocation();
   }
 
   viewPuzzles(locationId) {

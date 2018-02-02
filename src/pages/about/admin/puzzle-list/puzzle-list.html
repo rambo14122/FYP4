@@ -47,57 +47,61 @@
   </ion-list>
   <!--<button ion-button block color="danger" *ngIf="!editPuzzleFlag" (click)="toggleForm()">Add Puzzle</button>-->
   <!--*ngIf="addPuzzleFlag||editPuzzleFlag"-->
-  <ion-item-group>
-    <ion-item>
-      <ion-label floating>Puzzle title:</ion-label>
-      <ion-input type="text"
-                 [(ngModel)]="puzzleTemp.title"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label floating>Puzzle content:</ion-label>
-      <ion-textarea type="text"
-                    [(ngModel)]="puzzleTemp.puzzleContent"></ion-textarea>
-    </ion-item>
-    <ion-item>
-      <ion-label floating>Puzzle hint1:</ion-label>
-      <ion-input type="text"
-                 [(ngModel)]="puzzleTemp.hint1"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label floating>Puzzle hint2:</ion-label>
-      <ion-input type="text"
-                 [(ngModel)]="puzzleTemp.hint2"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label floating>Puzzle answer:</ion-label>
-      <ion-input type="text"
-                 [(ngModel)]="puzzleTemp.answer"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label>Strict answer?</ion-label>
-      <ion-checkbox [(ngModel)]="puzzleTemp.strictAnswer"></ion-checkbox>
-    </ion-item>
-    <ion-item>
-      <ion-label>Puzzle special?</ion-label>
-      <ion-checkbox [(ngModel)]="puzzleTemp.special"></ion-checkbox>
-    </ion-item>
-    <!--*ngIf="editPuzzleFlag"-->
-    <ion-item>
-      <ion-label floating>Puzzle order:</ion-label>
-      <ion-input type="text"
-                 [(ngModel)]="puzzleTemp.order"></ion-input>
-    </ion-item>
+  <div *ngIf="puzzleTempKey!=null && puzzleTempKey!=''">
+    <ion-item-group>
+      <ion-item>
+        <ion-label floating>Puzzle title:</ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="puzzleTemp.title"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Puzzle content:</ion-label>
+        <ion-textarea type="text"
+                      [(ngModel)]="puzzleTemp.puzzleContent"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Puzzle hint1:</ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="puzzleTemp.hint1"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Puzzle hint2:</ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="puzzleTemp.hint2"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Puzzle answer:</ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="puzzleTemp.answer"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Strict answer?</ion-label>
+        <ion-checkbox [(ngModel)]="puzzleTemp.strictAnswer"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-label>Puzzle special?</ion-label>
+        <ion-checkbox [(ngModel)]="puzzleTemp.special"></ion-checkbox>
+      </ion-item>
+      <!--*ngIf="editPuzzleFlag"-->
+      <ion-item>
+        <ion-label floating>Puzzle order:</ion-label>
+        <ion-input type="text"
+                   [(ngModel)]="puzzleTemp.order"></ion-input>
+      </ion-item>
 
 
-    <!--<div class="puzzleImage">-->
-    <!--<img src="{{puzzleTemp.photoUrl}}">-->
-    <!--</div>-->
-    <!--<button ion-button block (click)="chooseImage()">Choose from Gallery</button>-->
-    <!--<div class="spacer" style="height: 20px;"></div>-->
-    <button ion-button block color="hcolor" (click)="addPuzzle()">Update</button>
-    <div class="spacer" style="height: 20px;"></div>
-    <!--<button ion-button block color="hcolor" (click)="cancelUpdate()">Cancel</button>-->
+      <!--<div class="puzzleImage">-->
+      <!--<img src="{{puzzleTemp.photoUrl}}">-->
+      <!--</div>-->
+      <!--<button ion-button block (click)="chooseImage()">Choose from Gallery</button>-->
+      <!--<div class="spacer" style="height: 20px;"></div>-->
+      <button ion-button block (click)="updatePuzzle()">Submit</button>
+      <button ion-button block (click)="cancel()">Cancel</button>
 
-  </ion-item-group>
+
+    </ion-item-group>
+  </div>
+  <button *ngIf="puzzleTempKey==null||puzzleTempKey==''" ion-button block (click)="addPuzzle()">Add new</button>
+
   <div class="spacer" style="height: 30px;"></div>
 </ion-content>
