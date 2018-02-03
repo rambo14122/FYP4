@@ -20,6 +20,10 @@ export class GamePage {
 
   }
 
+  puzzleSolve(puzzleId) {
+    console.log("test");
+  }
+
   startGame() {
     this.statusProvider.groupStart().then((res) => {
     }).catch((err) => {

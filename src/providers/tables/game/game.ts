@@ -48,7 +48,7 @@ export class GameProvider {
       if (this.gameTableInfo[locationId].puzzles != null) {
         var puzzleArray = this.settingProvider.jsonToArray(this.gameTableInfo[locationId].puzzles);
         console.log("unsorted puzzle", puzzleArray);
-        puzzleArray.sort((puzzle1, puzzle2)=> {
+        puzzleArray.sort((puzzle1, puzzle2) => {
           if (puzzle1.order < puzzle2.order)
             return -1;
           if (puzzle1.order > puzzle2.order)
@@ -80,6 +80,7 @@ export class GameProvider {
     )
     return promise;
   }
+
 
   updatePuzzle(locationId, puzzleId, puzzleTemp) {
     var promise = new Promise((resolve, reject) => {
