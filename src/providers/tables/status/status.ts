@@ -18,18 +18,66 @@ export class StatusProvider {
   readonly groups = "groups";
   readonly puzzles = "puzzles";
   firstTimeFlag = true;
+  firstUnsolved = '';
+  puzzleStatus = [] as PuzzleStatus[];
+  puzzleStatusKeys = [];
+  groupStatus = {} as GroupStatus;
 
   constructor(private groupProvider: GroupProvider, private gameProvider: GameProvider, private settingProvider: SettingProvider, private events: Events) {
   }
 
+  initParams() {
+    this.groupStatus = {} as GroupStatus;
+    this.puzzleStatus = [] as PuzzleStatus[];
+    this.puzzleStatusKeys = [];
+  }
+
   getStatusTable() {
     this.statusTableRef.on('value', (snapshot) => {
+      this.initParams();
       this.statusTableInfo = snapshot.val();
       console.log("statusTable,", this.statusTableInfo);
+      if (this.statusTableInfo.groups != null
+        && this.statusTableInfo.groups.length != 0
+        && this.groupProvider.userGroupId != null
+        && this.groupProvider.userGroupId != '') {
+        this.groupStatus = this.statusTableInfo.groups[this.groupProvider.userGroupId];
+        this.getPuzzleStatus();
+      }
       this.events.publish(this.STATUS_TABLE_UPDATE);
       if (this.firstTimeFlag)
         this.firstTimeFlag = false;
     });
+  }
+
+  getPuzzleStatus() {
+    console.log(this.groupStatus.puzzles);
+    var groupStatusArray = this.settingProvider.jsonToArray(this.groupStatus.puzzles);
+    groupStatusArray.sort((puzzle1, puzzle2) => {
+      if (puzzle1.order < puzzle2.order) {
+        return -1;
+      }
+      if (puzzle1.order > puzzle2.order) {
+        return 1;
+      }
+      return 0;
+    });
+    console.log("sorted:", groupStatusArray);
+    groupStatusArray = this.groupStatus.puzzles;
+    this.puzzleStatus = this.groupStatus.puzzles;
+    console.log("puzzleS:", this.puzzleStatus);
+    this.puzzleStatusKeys = Object.keys(this.puzzleStatus);
+    this.getFirstUnsolved();
+  }
+
+  getFirstUnsolved() {
+    this.firstUnsolved = '';
+    for (let puzzleId of this.puzzleStatusKeys) {
+      if (this.puzzleStatus[puzzleId].solved == false) {
+        this.firstUnsolved = puzzleId;
+        break;
+      }
+    }
   }
 
   groupStart() {

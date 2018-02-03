@@ -26,13 +26,13 @@ export class GroupProvider {
   getGroupTable() {
     this.groupTableRef.on('value', (snapshot) => {
       this.groupTableInfo = this.settingProvider.snapshotToArray(snapshot);
-      this.groupTableInfo.sort(((group1, group2) => {
+      this.groupTableInfo.sort((group1, group2) => {
         if (group1.groupNumber < group2.groupNumber)
           return -1;
         if (group1.groupNumber > group2.groupNumber)
           return 1;
         return 0;
-      }));
+      });
       this.groupTableInfoKeys = Object.keys(this.groupTableInfo);
       this.updateUserGroupStatus();
       console.log("user group status", this.userGroupId);

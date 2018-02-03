@@ -37,7 +37,14 @@
     &&statusProvider.statusTableInfo.groups[groupProvider.userGroupId]!=null
     &&statusProvider.statusTableInfo.groups[groupProvider.userGroupId].startTime!=null
     &&statusProvider.statusTableInfo.groups[groupProvider.userGroupId].puzzles!=null)">
-    gameStarted
+    game
+    <ion-item *ngFor="let puzzleId of statusProvider.puzzleStatusKeys">
+      <!--*ngIf="statusProvider.puzzleInfo.solved==true"-->
+      <ion-item>
+        <p>{{gameProvider.puzzleDetails[puzzleId].title}}</p>
+      </ion-item>
+
+    </ion-item>
   </div>
 
 </ion-content>

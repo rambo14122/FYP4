@@ -83,9 +83,11 @@ export class SettingProvider {
     return returnArr;
   }
   jsonToArray = (json) => {
-    var arr = Object.keys(json).map(function (k) {
-      return json[k]
-    });
-    return arr;
+    var array = [];
+    var keys = Object.keys(json);
+    for (let key of keys) {
+      array[key] = json[key];
+    }
+    return array;
   }
 }
