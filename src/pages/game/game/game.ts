@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
-import {StatusProvider} from '../../providers/tables/status/status';
-import {GroupProvider} from '../../providers/tables/group/group';
-import {GameProvider} from '../../providers/tables/game/game';
+import {StatusProvider} from '../../../providers/tables/status/status';
+import {GroupProvider} from '../../../providers/tables/group/group';
+import {GameProvider} from '../../../providers/tables/game/game';
 
 
 @IonicPage()
@@ -21,7 +21,8 @@ export class GamePage {
   }
 
   puzzleSolve(puzzleId) {
-    console.log("test");
+    console.log(puzzleId);
+    this.navCtrl.push('PuzzleSolvePage', {'puzzleId': puzzleId});
   }
 
   startGame() {

@@ -7,23 +7,25 @@ import {PuzzleStatus} from '../../../assets/models/interfaces/PuzzleStatus';
 import {GroupStatus} from '../../../assets/models/interfaces/GroupStatus';
 import {GameProvider} from '../game/game';
 import {GroupProvider} from '../group/group';
+import {UserProvider} from '../user/user';
 
 @Injectable()
 export class StatusProvider {
   readonly STATUS_TABLE = '/StatusTable';
   statusTableRef = firebase.database().ref(this.STATUS_TABLE);
   statusTableInfo: Status;
-  readonly endTime = 'endTime';
   readonly STATUS_TABLE_UPDATE = "statusTableUpdate";
   readonly groups = "groups";
   readonly puzzles = "puzzles";
+  readonly hintPoint = -20;
+  readonly answerPoint = 10;
   firstTimeFlag = true;
   firstUnsolved = '';
   puzzleStatus = [] as PuzzleStatus[];
   puzzleStatusKeys = [];
   groupStatus = {} as GroupStatus;
 
-  constructor(private groupProvider: GroupProvider, private gameProvider: GameProvider, private settingProvider: SettingProvider, private events: Events) {
+  constructor(private userProvider: UserProvider, private groupProvider: GroupProvider, private gameProvider: GameProvider, private settingProvider: SettingProvider, private events: Events) {
   }
 
   initParams() {
@@ -36,13 +38,13 @@ export class StatusProvider {
     this.statusTableRef.on('value', (snapshot) => {
       this.initParams();
       this.statusTableInfo = snapshot.val();
-      console.log("statusTable,", this.statusTableInfo);
       if (this.statusTableInfo.groups != null
         && this.statusTableInfo.groups.length != 0
         && this.groupProvider.userGroupId != null
         && this.groupProvider.userGroupId != '') {
         this.groupStatus = this.statusTableInfo.groups[this.groupProvider.userGroupId];
         this.getPuzzleStatus();
+        this.getFirstUnsolved();
       }
       this.events.publish(this.STATUS_TABLE_UPDATE);
       if (this.firstTimeFlag)
@@ -52,22 +54,17 @@ export class StatusProvider {
 
   getPuzzleStatus() {
     console.log(this.groupStatus.puzzles);
-    var groupStatusArray = this.settingProvider.jsonToArray(this.groupStatus.puzzles);
-    groupStatusArray.sort((puzzle1, puzzle2) => {
-      if (puzzle1.order < puzzle2.order) {
+    this.puzzleStatus = this.settingProvider.jsonToArray(this.groupStatus.puzzles);
+    this.puzzleStatusKeys = Object.keys(this.puzzleStatus);
+    this.puzzleStatusKeys.sort((puzzleId1, puzzleId2) => {
+      if (this.puzzleStatus[puzzleId1].order < this.puzzleStatus[puzzleId2].order) {
         return -1;
       }
-      if (puzzle1.order > puzzle2.order) {
+      if (this.puzzleStatus[puzzleId1].order > this.puzzleStatus[puzzleId2].order) {
         return 1;
       }
       return 0;
     });
-    console.log("sorted:", groupStatusArray);
-    groupStatusArray = this.groupStatus.puzzles;
-    this.puzzleStatus = this.groupStatus.puzzles;
-    console.log("puzzleS:", this.puzzleStatus);
-    this.puzzleStatusKeys = Object.keys(this.puzzleStatus);
-    this.getFirstUnsolved();
   }
 
   getFirstUnsolved() {
@@ -75,19 +72,94 @@ export class StatusProvider {
     for (let puzzleId of this.puzzleStatusKeys) {
       if (this.puzzleStatus[puzzleId].solved == false) {
         this.firstUnsolved = puzzleId;
+        console.log("firstUnsolved:", this.firstUnsolved);
         break;
       }
     }
+    if ((this.firstUnsolved == null || this.firstUnsolved == '')
+      && (this.groupStatus.endTime == null || this.groupStatus.endTime == '')) {
+      this.groupEnd().then((res) => {
+
+      }).catch((err => {
+
+      }));
+    }
+  }
+
+  changePoint(point) {
+    var updatedPoint = point + this.groupStatus.point;
+    var groupTemp = {} as GroupStatus;
+    groupTemp.point = updatedPoint;
+    var promise = this.updateGroupStatus(groupTemp);
+    return promise;
+  }
+
+  viewHint1(puzzleId) {
+    var puzzleTemp = {} as PuzzleStatus;
+    puzzleTemp.hint1 = true;
+    var promise = this.updatePuzzleStatus(puzzleId, puzzleTemp);
+    return promise;
+  }
+
+  viewHint2(puzzleId) {
+    var puzzleTemp = {} as PuzzleStatus;
+    puzzleTemp.hint2 = true;
+    var promise = this.updatePuzzleStatus(puzzleId, puzzleTemp);
+    return promise;
   }
 
   groupStart() {
-    var groupStatus = {} as GroupStatus;
-    groupStatus.startTime = this.settingProvider.getFireBaseTimeStamp();
-    groupStatus.endTime = '';
-    groupStatus.point = 50;
-    groupStatus.puzzles = this.getRandomPuzzles();
+    //need to use set to create puzzles branch
+    var groupTemp = {} as GroupStatus;
+    groupTemp.startTime = this.settingProvider.getFireBaseTimeStamp();
+    groupTemp.endTime = '';
+    groupTemp.point = 50;
+    groupTemp.puzzles = this.getRandomPuzzles();
     var promise = new Promise((resolve, reject) => {
-      this.statusTableRef.child(this.groups).child(this.groupProvider.userGroupId).set(groupStatus).then((res) => {
+      this.statusTableRef.child(this.groups).child(this.groupProvider.userGroupId)
+        .set(groupTemp).then((res) => {
+        resolve(true);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+    return promise;
+  }
+
+  groupEnd() {
+    var groupTemp = {} as GroupStatus;
+    this.groupStatus.endTime = this.settingProvider.getFireBaseTimeStamp();
+    var promise = this.updateGroupStatus(groupTemp);
+    return promise;
+  }
+
+  answerPuzzle(puzzleId) {
+    this.firstUnsolved = '';
+    var puzzleTemp = {} as PuzzleStatus;
+    puzzleTemp.solved = true;
+    puzzleTemp.solvedBy = this.userProvider.getUid();
+    var promise = this.updatePuzzleStatus(puzzleId, puzzleTemp);
+    return promise;
+  }
+
+  updatePuzzleStatus(puzzleId, puzzleTemp) {
+    var promise = new Promise((resolve, reject) => {
+      this.statusTableRef.child(this.groups).child(this.groupProvider.userGroupId)
+        .child(this.puzzles).child(puzzleId)
+        .update(puzzleTemp).then((res) => {
+        resolve(true);
+      }).catch((err) => {
+        reject(err);
+      })
+    });
+    return promise;
+  }
+
+  updateGroupStatus(groupTemp: GroupStatus) {
+    console.log('groupTemp', groupTemp);
+    var promise = new Promise((resolve, reject) => {
+      this.statusTableRef.child(this.groups).child(this.groupProvider.userGroupId)
+        .update(groupTemp).then((res) => {
         resolve(true);
       }).catch((err) => {
         reject(err);
@@ -112,6 +184,7 @@ export class StatusProvider {
         }
       }
     }
+    console.log("puzzleStatusArray", puzzleStatusArray);
     return puzzleStatusArray;
   }
 
@@ -136,9 +209,6 @@ export class StatusProvider {
     return puzzleStatus;
   }
 
-  groupFinish() {
-
-  }
 
   startGame() {
     var statusTemp = {} as Status;
@@ -155,9 +225,12 @@ export class StatusProvider {
     return promise;
   }
 
+
   endGame() {
+    var statusTemp = {} as Status;
+    statusTemp.endTime = this.settingProvider.getFireBaseTimeStamp();
     var promise = new Promise((resolve, reject) => {
-        this.statusTableRef.child(this.endTime).set(this.settingProvider.getFireBaseTimeStamp()).then((res) => {
+        this.statusTableRef.update(statusTemp).then((res) => {
           resolve(true);
         }).catch((err) => {
           reject(err);

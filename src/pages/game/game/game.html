@@ -43,10 +43,19 @@
         <!--group started-->
         <div *ngFor="let puzzleId of statusProvider.puzzleStatusKeys">
           <!--group solved-->
-          <ion-item *ngIf="!gameProvider.puzzleDetails[puzzleId].solved" (click)="puzzleSolve(puzzleId)">
-            <p>{{gameProvider.puzzleDetails[puzzleId].title}}</p>
+          <ion-item *ngIf="statusProvider.puzzleStatus[puzzleId].solved" (click)="puzzleSolve(puzzleId)">
+            <p>solved:{{gameProvider.puzzleDetails[puzzleId].title}}</p>
           </ion-item>
         </div>
+        <ion-item *ngIf="statusProvider.firstUnsolved!=null&&statusProvider.firstUnsolved!=''"
+                  (click)="puzzleSolve(statusProvider.firstUnsolved)">
+          <p>unsolved:{{gameProvider.puzzleDetails[statusProvider.firstUnsolved].title}}</p>
+        </ion-item>
+        <ion-item *ngIf="statusProvider.groupStatus.endTime!=null
+                        &&statusProvider.groupStatus.endTime!=''">
+          <p>Game Finished</p>
+        </ion-item>
+        <p>{{statusProvider.groupStatus.point}}</p>
       </div>
     </div>
   </div>

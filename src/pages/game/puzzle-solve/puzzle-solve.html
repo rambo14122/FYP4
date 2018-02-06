@@ -1,0 +1,30 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>puzzleSolve</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item>
+    <p>
+      {{gameProvider.puzzleDetails[puzzleId].title}}
+    </p>
+    <button ion-button [disabled]="lock"
+            *ngIf="statusProvider.puzzleStatus[puzzleId].hint1==false"
+            block (click)="viewHint1()">Hint1(-20)
+    </button>
+    <button ion-button [disabled]="lock"
+            *ngIf="statusProvider.puzzleStatus[puzzleId].hint2==false"
+            block (click)="viewHint2()">Hint2(-20)
+    </button>
+    <button ion-button [disabled]="lock"
+            *ngIf="statusProvider.puzzleStatus[puzzleId].solved==null
+            ||statusProvider.puzzleStatus[puzzleId].solved==false"
+            block (click)="answerPuzzle()">Answer(+10)
+    </button>
+  </ion-item>
+  <p>{{statusProvider.groupStatus.point}}</p>
+</ion-content>

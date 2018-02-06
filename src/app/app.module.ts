@@ -20,6 +20,7 @@ import {OpenPage} from '../pages/open/open';
 import { GameProvider } from '../providers/tables/game/game';
 import { StatusProvider } from '../providers/tables/status/status';
 import { GroupProvider } from '../providers/tables/group/group';
+import { ChatProvider } from '../providers/tables/chat/chat';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { GroupProvider } from '../providers/tables/group/group';
     GameProvider,
     StatusProvider,
     GroupProvider,
+    ChatProvider,
   ]
 })
 export class AppModule {}
