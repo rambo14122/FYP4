@@ -24,7 +24,7 @@ export class MyApp {
               this.rootPage = 'ProfilePage';
             }
             else {
-              this.rootPage = 'TabsPage';
+               // this.rootPage = 'TabsPage';
             }
           }).catch((err) => {
             console.log("err", err.message);
